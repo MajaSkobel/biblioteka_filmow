@@ -21,33 +21,25 @@ class Series(Movie):
           self.episode = episode
 
     def __str__(self):
-         if len(str(self.season))==1:
-              self.season="0"+str(self.season)
-         if len(str(self.episode))==1:
-              self.episode="0"+str(self.episode)
-         return f"{self.title} S{self.season}E{self.episode}"
+         return f"{self.title} S{str(self.season).zfill(2)}E{str(self.episode).zfill(2)}"
 
 # Function which searches for an item in the library by item
 def search(input_title,library_titles):
     for item in library_titles:
          if item.title == input_title:
               return item
+         
+def get_items(library_titles, condition):
+    chosen_items = [item for item in library_titles if condition(item)]
+    return sorted(chosen_items, key=lambda item: item.title)
 
-# Function which sorts movies from the library
+# Function which sorts the movies from the library
 def get_movies(library_titles):
-    my_movies = []
-    for item in library_titles:
-        if not isinstance(item,Series):
-            my_movies.append(item)
-    return sorted(my_movies,key=lambda item: item.title)
+    return get_items(library_titles, lambda item: not isinstance(item, Series))
 
 # Function which sorts the series from the library
 def get_series(library_titles):
-     my_series = []
-     for item in library_titles:
-          if isinstance(item,Series):
-               my_series.append(item)
-     return sorted(my_series,key=lambda item: item.title)
+    return get_items(library_titles, lambda item: isinstance(item, Series))
 
 # Generating random views numbers
 def generate_views(library_titles):
